@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { toLocalDateString } from '@/lib/dates';
 
 export interface BookedDate {
   date: string;
@@ -64,14 +65,14 @@ export const useBookedDates = (productId: string) => {
   }, [productId]);
 
   const isDateBooked = (date: Date, timeSlot: string) => {
-    const dateString = date.toISOString().split('T')[0];
+    const dateString = toLocalDateString(date);
     return bookedDates.some(
       booked => booked.date === dateString && booked.time_slot === timeSlot
     );
   };
 
   const isDateFullyBooked = (date: Date) => {
-    const dateString = date.toISOString().split('T')[0];
+    const dateString = toLocalDateString(date);
     const bookedSlotsForDate = bookedDates.filter(
       booked => booked.date === dateString
     );
