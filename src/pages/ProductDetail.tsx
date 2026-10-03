@@ -9,6 +9,7 @@ import { Navbar } from '@/components/Navbar';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 import { useWishlist } from '@/hooks/useWishlist';
+import { toLocalDateString, startOfToday } from '@/lib/dates';
 import { Heart, Eye, ArrowLeft, Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/hooks/useProducts';
@@ -46,16 +47,8 @@ const ProductDetail = () => {
   // Use booked dates hook
   const { bookedDates, isDateBooked, isDateFullyBooked } = useBookedDates(id || '');
 
-  // Booking window: 20 Sep – 10 Oct (dynamic per year)
-  const now = new Date();
-  let windowYear = now.getFullYear();
-  let startDate = new Date(windowYear, 8, 20); // Sep is month 8 (0-indexed)
-  let endDate = new Date(windowYear, 9, 10);   // Oct is month 9
-  if (now > endDate) {
-    windowYear += 1;
-    startDate = new Date(windowYear, 8, 20);
-    endDate = new Date(windowYear, 9, 10);
-  }
+  // Only today and later can be booked
+  const today = startOfToday();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -130,7 +123,7 @@ const ProductDetail = () => {
         .insert({
           user_id: user.user_id,
           product_id: id,
-          booking_date: selectedDate.toISOString().split('T')[0],
+          booking_date: toLocalDateString(selectedDate),
           time_slot: 'Full Day',
           status: 'pending'
         });
@@ -238,16 +231,15 @@ const ProductDetail = () => {
                 <div>
                   <label className="block text-sm font-medium mb-3 text-foreground">
                     <CalendarIcon className="inline w-4 h-4 mr-2" />
-                    Select Date (20 Sep - 10 Oct)
+                    Select Date
                   </label>
                   <Calendar
                     mode="single"
                     selected={selectedDate}
                     onSelect={setSelectedDate}
-                    defaultMonth={startDate}
-                    fromDate={startDate}
-                    toDate={endDate}
-                    disabled={(date) => date < startDate || date > endDate || isDateFullyBooked(date)}
+                    defaultMonth={today}
+                    fromDate={today}
+                    disabled={(date) => date < today || isDateFullyBooked(date)}
                     modifiers={{
                       booked: (date) => isDateFullyBooked(date)
                     }}
