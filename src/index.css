@@ -95,7 +95,12 @@
     backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     transition: all 0.18s ease-out;
-  }
+  } 
+  .glass-surface {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+}
 
   .glass-card:hover {
     border-color: var(--glass-hover-border);
