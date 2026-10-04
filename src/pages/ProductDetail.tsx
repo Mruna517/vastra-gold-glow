@@ -276,7 +276,7 @@ const ProductDetail = () => {
 
       {/* Booking Confirmation Modal */}
       <Dialog open={showBookingModal} onOpenChange={setShowBookingModal}>
-        <DialogContent className="glass-card border-primary/30">
+        <DialogContent className="glass-surface border-primary/30">
           <DialogHeader>
             <DialogTitle className="font-display text-xl">Confirm Booking Request</DialogTitle>
           </DialogHeader>
@@ -301,7 +301,7 @@ const ProductDetail = () => {
 
       {/* Login Modal */}
       <Dialog open={showLoginModal} onOpenChange={setShowLoginModal}>
-        <DialogContent className="glass-card border-primary/30">
+        <DialogContent className="glass-surface border-primary/30">
           <DialogHeader>
             <DialogTitle className="font-display text-xl">Login to Continue Booking</DialogTitle>
           </DialogHeader>
