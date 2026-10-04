@@ -8,9 +8,24 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
+// Some mobile / in-app browsers (private mode, blocked cookies) throw when
+// localStorage is touched. Fall back to in-memory storage instead of crashing.
+const memory = new Map<string, string>();
+const safeStorage = {
+  getItem: (k: string) => {
+    try { return window.localStorage.getItem(k); } catch { return memory.get(k) ?? null; }
+  },
+  setItem: (k: string, v: string) => {
+    try { window.localStorage.setItem(k, v); } catch { memory.set(k, v); }
+  },
+  removeItem: (k: string) => {
+    try { window.localStorage.removeItem(k); } catch { memory.delete(k); }
+  },
+};
+
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
-    storage: localStorage,
+    storage: safeStorage,
     persistSession: true,
     autoRefreshToken: true,
   }
