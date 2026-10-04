@@ -15,12 +15,6 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-    <script>
-      // Debug mode: open the site with ?debug=1 to get an on-phone console (Eruda)
-      if (/[?&]debug/.test(location.search)) {
-        document.write('<script src="https://cdn.jsdelivr.net/npm/eruda"><\/script><script>window.eruda && eruda.init();<\/script>');
-      }
-    </script>
   </head>
 
   <body>
@@ -51,5 +45,36 @@
     </script>
 
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Self-contained diagnostics: open the site with ?debug=1 to see a status box after 4 seconds
+      (function () {
+        if (!/[?&]debug/.test(location.search)) return;
+        var errs = [];
+        window.addEventListener('error', function (e) { if (e.error || e.message) errs.push('ERR: ' + (e.message || '') ); });
+        window.addEventListener('unhandledrejection', function (e) { errs.push('PROMISE: ' + (e.reason && (e.reason.message || e.reason))); });
+        setTimeout(function () {
+          var root = document.getElementById('root');
+          var ls = 'ok';
+          try { localStorage.setItem('t', '1'); localStorage.removeItem('t'); } catch (e) { ls = 'BLOCKED: ' + e.message; }
+          var cs = root ? getComputedStyle(root) : null;
+          var lines = [
+            'DIAGNOSTICS (screenshot this)',
+            'screen: ' + innerWidth + 'x' + innerHeight + ' dpr ' + devicePixelRatio,
+            'UA: ' + navigator.userAgent,
+            'root children: ' + (root ? root.children.length : 'no root'),
+            'root text: ' + (root ? JSON.stringify(root.innerText.slice(0, 80)) : ''),
+            'root size: ' + (root ? root.offsetWidth + 'x' + root.offsetHeight : ''),
+            'body size: ' + document.body.offsetWidth + 'x' + document.body.offsetHeight,
+            'localStorage: ' + ls,
+            'online: ' + navigator.onLine,
+            'js errors: ' + (errs.length ? errs.join(' | ') : 'none')
+          ];
+          var d = document.createElement('div');
+          d.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99998;max-height:60vh;overflow:auto;padding:10px;background:#111;color:#7CFC00;font:11px/1.4 monospace;white-space:pre-wrap;border-top:2px solid #D4AF37';
+          d.textContent = lines.join('\n');
+          document.body.appendChild(d);
+        }, 4000);
+      })();
+    </script>
   </body>
 </html>
