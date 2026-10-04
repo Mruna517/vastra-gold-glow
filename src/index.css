@@ -1,133 +1,55 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vastraveda - Premium Ghagra & Jewellery Collection</title>
+    <meta name="description" content="Discover exquisite ghagra and jewellery collections at Vastraveda. Book your premium rental for special occasions." />
+    <meta name="author" content="Vastraveda" />
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+    <meta property="og:title" content="Vastraveda - Premium Ghagra & Jewellery Collection" />
+    <meta property="og:description" content="Discover exquisite ghagra and jewellery collections at Vastraveda. Book your premium rental for special occasions." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
-/* Vastraveda Design System - Luxury Black & Gold Theme */
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <script>
+      // Debug mode: open the site with ?debug=1 to get an on-phone console (Eruda)
+      if (/[?&]debug/.test(location.search)) {
+        document.write('<script src="https://cdn.jsdelivr.net/npm/eruda"><\/script><script>window.eruda && eruda.init();<\/script>');
+      }
+    </script>
+  </head>
 
-@layer base {
-  :root {
-    /* Core Black Canvas */
-    --background: 0 0% 4.3%; /* #0B0B0B */
-    --foreground: 0 0% 96.1%; /* #F5F5F5 */
+  <body>
+    <div id="root"><p style="color:#D4AF37;padding:24px;font-family:sans-serif;font-size:18px">Loading Vastraveda...</p></div>
+    <script>
+      // Debug helper: show any startup error on screen instead of a blank page
+      (function () {
+        function show(msg) {
+          var d = document.getElementById('boot-error');
+          if (!d) {
+            d = document.createElement('pre');
+            d.id = 'boot-error';
+            d.style.cssText = 'position:fixed;inset:0;z-index:99999;margin:0;padding:16px;overflow:auto;background:#0b0b0b;color:#f5f5f5;font:12px/1.4 monospace;white-space:pre-wrap';
+            document.body.appendChild(d);
+          }
+          d.textContent += msg + '\n\n';
+        }
+        window.addEventListener('error', function (e) {
+          // ignore failed images/fonts/stylesheets; only show real JavaScript errors
+          if (!e.error && !e.message) return;
+          show('ERROR: ' + (e.message || '') + '\n' + ((e.error && e.error.stack) || (e.filename || '') + ':' + (e.lineno || '')));
+        });
+        window.addEventListener('unhandledrejection', function (e) {
+          show('PROMISE ERROR: ' + (e.reason && (e.reason.stack || e.reason.message) || e.reason));
+        });
+        window.__showBootError = show;
+      })();
+    </script>
 
-    /* Elevation Blacks */
-    --card: 0 0% 7.1%; /* #121212 */
-    --card-foreground: 0 0% 96.1%;
-
-    --popover: 0 0% 11.8%; /* #1E1E1E */
-    --popover-foreground: 0 0% 96.1%;
-
-    /* Premium Gold Accent */
-    --primary: 45 76% 51%; /* #D4AF37 */
-    --primary-foreground: 0 0% 4.3%;
-
-    /* Secondary Elevation */
-    --secondary: 0 0% 16.9%; /* #2B2B2B */
-    --secondary-foreground: 0 0% 96.1%;
-
-    /* Muted Elements */
-    --muted: 0 0% 11.8%;
-    --muted-foreground: 0 0% 74.1%; /* #BDBDBD */
-
-    /* Warm Cream Accent */
-    --accent: 45 67% 86%; /* #F4E7C2 */
-    --accent-foreground: 0 0% 4.3%;
-
-    /* Status Colors */
-    --success: 142 76% 36%; /* #22C55E */
-    --destructive: 0 84% 60%; /* #EF4444 */
-    --info: 213 94% 68%; /* #60A5FA */
-    --warning: 45 93% 47%; /* #F59E0B */
-
-    /* UI Elements */
-    --border: 0 0% 16.9%;
-    --input: 0 0% 11.8%;
-    --ring: 45 76% 51%;
-
-    --radius: 0.75rem;
-
-    /* Glassmorphism */
-    --glass-bg: rgba(255, 255, 255, 0.02);
-    --glass-border: rgba(212, 175, 55, 0.2);
-    --glass-hover-border: rgba(212, 175, 55, 0.4);
-
-    /* Shadows */
-    --shadow-luxury: 0 6px 18px rgba(0, 0, 0, 0.6);
-    --shadow-glow: 0 0 12px rgba(212, 175, 55, 0.18);
-
-    /* Sidebar */
-    --sidebar-background: 0 0% 4.3%;
-    --sidebar-foreground: 0 0% 96.1%;
-    --sidebar-primary: 45 76% 51%;
-    --sidebar-primary-foreground: 0 0% 4.3%;
-    --sidebar-accent: 0 0% 11.8%;
-    --sidebar-accent-foreground: 0 0% 96.1%;
-    --sidebar-border: 0 0% 16.9%;
-    --sidebar-ring: 45 76% 51%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-ui;
-    font-feature-settings: "kern" 1, "liga" 1;
-  }
-
-  /* Typography */
-  .font-display {
-    font-family: 'Playfair Display', serif;
-    letter-spacing: -0.02em;
-  }
-
-  .font-ui {
-    font-family: 'Inter', sans-serif;
-  }
-
-  /* Glassmorphism utilities */
-  .glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    transition: all 0.18s ease-out;
-  } 
-  .glass-surface {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-}
-
-  .glass-card:hover {
-    border-color: var(--glass-hover-border);
-    box-shadow: var(--shadow-glow);
-    transform: translateY(-2px);
-  }
-
-  /* Animation utilities */
-  .transition-luxury {
-    transition: all 0.18s ease-out;
-  }
-
-  .hover-lift:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-luxury);
-  }
-
-  /* Film grain overlay */
-  .film-grain::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: 
-      radial-gradient(circle at 25% 25%, rgba(255,255,255,0.01) 1px, transparent 1px),
-      radial-gradient(circle at 75% 75%, rgba(255,255,255,0.005) 1px, transparent 1px);
-    background-size: 3px 3px, 4px 4px;
-    pointer-events: none;
-    opacity: 0.3;
-  }
-}
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
