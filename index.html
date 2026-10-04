@@ -19,6 +19,29 @@
 
   <body>
     <div id="root"></div>
+    <script>
+      // Debug helper: show any startup error on screen instead of a blank page
+      (function () {
+        function show(msg) {
+          var d = document.getElementById('boot-error');
+          if (!d) {
+            d = document.createElement('pre');
+            d.id = 'boot-error';
+            d.style.cssText = 'position:fixed;inset:0;z-index:99999;margin:0;padding:16px;overflow:auto;background:#0b0b0b;color:#f5f5f5;font:12px/1.4 monospace;white-space:pre-wrap';
+            document.body.appendChild(d);
+          }
+          d.textContent += msg + '\n\n';
+        }
+        window.addEventListener('error', function (e) {
+          show('ERROR: ' + (e.message || '') + '\n' + ((e.error && e.error.stack) || (e.filename || '') + ':' + (e.lineno || '')));
+        }, true);
+        window.addEventListener('unhandledrejection', function (e) {
+          show('PROMISE ERROR: ' + (e.reason && (e.reason.stack || e.reason.message) || e.reason));
+        });
+        window.__showBootError = show;
+      })();
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
