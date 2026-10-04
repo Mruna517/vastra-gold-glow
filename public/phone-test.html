@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone test</title>
+<style>
+  html,body{margin:0;background:#ffffff;color:#000;font-family:sans-serif}
+  h1{margin:0;padding:16px;background:#d4af37;font-size:22px}
+  pre{margin:0;padding:12px;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  #app{margin:12px;border:3px dashed #d4af37;min-height:60px}
+  .ok{color:#067d17}.bad{color:#c00000;font-weight:bold}
+</style>
+</head>
+<body>
+<h1>PHONE TEST PAGE</h1>
+<pre id="out">Step 1: HTML + CSS loaded (you can see this)
+Step 2: waiting for JavaScript...</pre>
+<div id="app"></div>
+<script>
+(function () {
+  var out = document.getElementById('out');
+  function log(t, cls) {
+    var s = document.createElement('div');
+    s.textContent = t; if (cls) s.className = cls;
+    out.appendChild(s);
+  }
+  window.addEventListener('error', function (e) { log('JS ERROR: ' + (e.message || '(resource failed: ' + (e.target && (e.target.src || e.target.href)) + ')'), 'bad'); }, true);
+  window.addEventListener('unhandledrejection', function (e) { log('PROMISE ERROR: ' + (e.reason && (e.reason.stack || e.reason.message) || e.reason), 'bad'); });
+  log('Step 2: JavaScript is running', 'ok');
+  log('Screen: ' + innerWidth + 'x' + innerHeight + '  dpr ' + devicePixelRatio);
+  log('UA: ' + navigator.userAgent);
+  try { localStorage.setItem('t','1'); localStorage.removeItem('t'); log('localStorage: ok', 'ok'); } catch (e) { log('localStorage: BLOCKED ' + e.message, 'bad'); }
+  log('Module scripts supported: ' + ('noModule' in HTMLScriptElement.prototype), 'ok');
+
+  fetch('/', { cache: 'no-store' }).then(function (r) {
+    log('Step 3: fetched / -> status ' + r.status + ', type ' + r.headers.get('content-type'));
+    return r.text();
+  }).then(function (html) {
+    var m = html.match(/\/assets\/index-[^"']+\.js/);
+    log('Home page has DIAGNOSTICS code: ' + (html.indexOf('DIAGNOSTICS') > -1));
+    if (!m) { log('Could not find app script in home page', 'bad'); return; }
+    var src = m[0];
+    log('App script: ' + src);
+    return fetch(src, { cache: 'no-store' }).then(function (r) {
+      var ct = r.headers.get('content-type');
+      log('Step 4: fetched app script -> status ' + r.status + ', type ' + ct, /javascript/.test(ct || '') ? 'ok' : 'bad');
+      return r.text();
+    }).then(function (js) {
+      log('App script size: ' + js.length + ' chars, starts: ' + js.slice(0, 30).replace(/\s+/g, ' '));
+      log('Step 5: now starting the real app below...');
+      var el = document.createElement('div'); el.id = 'root';
+      document.getElementById('app').appendChild(el);
+      return import(src);
+    }).then(function () {
+      log('Step 6: app script ran without crashing', 'ok');
+      setTimeout(function () {
+        var root = document.getElementById('root');
+        log('App drew ' + (root ? root.children.length : 0) + ' elements; text starts: ' + JSON.stringify(root ? root.innerText.slice(0, 60) : ''), root && root.children.length ? 'ok' : 'bad');
+      }, 3000);
+    });
+  }).catch(function (e) { log('FAILED: ' + (e && (e.stack || e.message) || e), 'bad'); });
+})();
+</script>
+</body>
+</html>
